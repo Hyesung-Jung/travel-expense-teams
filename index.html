@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>출장비 계산기</title>
+    <!-- Microsoft Teams JS (탭 컨텍스트/테마). Teams 밖에서는 무시됨 -->
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/teams-js@2.54.0/dist/MicrosoftTeams.min.js"></script>
+    <!-- React 18 + Babel(브라우저 트랜스파일) + Tailwind Play CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html, body { margin: 0; background: #f1f5f9; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel" data-presets="react" src="app.jsx"></script>
+  </body>
+</html>
