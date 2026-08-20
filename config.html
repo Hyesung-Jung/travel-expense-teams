@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>출장비 계산기 · 탭 추가</title>
+    <script src="https://res.cdn.office.net/teams-js/2.24.0/js/MicrosoftTeams.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/teams-js@2.54.0/dist/MicrosoftTeams.min.js"></script>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; color: #1e293b; background: #f8fafc; }
+      .box { max-width: 460px; }
+      h1 { font-size: 16px; margin: 0 0 6px; }
+      p { font-size: 13px; color: #64748b; line-height: 1.6; margin: 0; }
+      .ok { margin-top: 14px; font-size: 12px; color: #4f46e5; }
+      .err { color: #dc2626; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>출장비 계산기</h1>
+      <p>이 채널에 출장비 계산기 탭을 추가합니다. 이 채널에서 저장한 출장은 이 채널에서만 보입니다. 상단의 <b>저장</b> 버튼을 누르면 추가됩니다.</p>
+      <p class="ok" id="status">설정을 준비하는 중…</p>
+    </div>
+    <script>
+      var CONTENT_URL = "https://travel-expense-teams.vercel.app/";
+      var statusEl = document.getElementById("status");
+
+      // teams-js 전역(microsoftTeams)이 준비될 때까지 대기
+      function waitForTeams(cb, tries) {
+        tries = tries || 0;
+        if (typeof microsoftTeams !== "undefined" && microsoftTeams.app) return cb();
+        if (tries > 50) { // 약 5초
+          statusEl.className = "ok err";
+          statusEl.textContent = "Teams 라이브러리를 불러오지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의하세요.";
+          return;
+        }
+        setTimeout(function () { waitForTeams(cb, tries + 1); }, 100);
+      }
+
+      waitForTeams(function () {
+        microsoftTeams.app.initialize().then(function () {
+          microsoftTeams.pages.config.registerOnSaveHandler(function (saveEvent) {
+            microsoftTeams.pages.config.setConfig({
+              entityId: "travelExpense",
+              contentUrl: CONTENT_URL,
+              websiteUrl: CONTENT_URL,
+              suggestedDisplayName: "출장비",
+            });
+            saveEvent.notifySuccess();
+          });
+          microsoftTeams.pages.config.setValidityState(true);
+          statusEl.textContent = "준비 완료 · 상단의 저장 버튼을 눌러 추가하세요.";
+        }).catch(function (e) {
+          statusEl.className = "ok err";
+          statusEl.textContent = "Teams 초기화 실패: " + e;
+        });
+      });
+    </script>
+  </body>
+</html>
