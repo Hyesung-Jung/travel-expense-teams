@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>출장비 계산기 · 탭 추가</title>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/teams-js@2.54.0/dist/MicrosoftTeams.min.js"></script>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; color: #1e293b; background: #f8fafc; }
+      .box { max-width: 460px; }
+      h1 { font-size: 16px; margin: 0 0 6px; }
+      p { font-size: 13px; color: #64748b; line-height: 1.6; margin: 0; }
+      .ok { margin-top: 14px; font-size: 12px; color: #4f46e5; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>출장비 계산기</h1>
+      <p>이 채널에 출장비 계산기 탭을 추가합니다. 이 채널에서 저장한 출장은 이 채널에서만 보입니다. 아래 <b>저장</b> 버튼을 누르면 추가됩니다.</p>
+      <p class="ok" id="status">설정을 준비하는 중…</p>
+    </div>
+    <script>
+      (async function () {
+        const CONTENT_URL = "https://travel-expense-teams.vercel.app/";
+        try {
+          await microsoftTeams.app.initialize();
+          microsoftTeams.pages.config.registerOnSaveHandler(function (saveEvent) {
+            microsoftTeams.pages.config.setConfig({
+              entityId: "travelExpense",
+              contentUrl: CONTENT_URL,
+              websiteUrl: CONTENT_URL,
+              suggestedDisplayName: "출장비",
+            });
+            saveEvent.notifySuccess();
+          });
+          // 별도 입력이 없으므로 즉시 저장 가능 상태로 설정
+          microsoftTeams.pages.config.setValidityState(true);
+          document.getElementById("status").textContent = "준비 완료 · 상단의 저장 버튼을 눌러 추가하세요.";
+        } catch (e) {
+          document.getElementById("status").textContent = "Teams 설정 컨텍스트를 불러오지 못했습니다: " + e;
+        }
+      })();
+    </script>
+  </body>
+</html>
